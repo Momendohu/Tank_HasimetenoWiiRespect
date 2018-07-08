@@ -4,6 +4,6 @@ using UnityEngine;
 //using UnityEngine.UI;
 
 public class DeV : MonoBehaviour {
-    public static readonly float TANK_MOVE_SPEED = 2;
-    public static readonly float TANK_ROTATE_SPEED = 8;
+    public static readonly float TANK_MOVE_SPEED = 0.1f;
+    public static readonly float TANK_ROTATE_SPEED = 20f;
 }
