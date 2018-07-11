@@ -5,18 +5,22 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour {
     //=============================================================
+    public bool IsUseAI = false;
+    public int BulletNum;
+
     private GameObject tower;
     private GameObject bodies;
 
     private float Direction; //方向
     private float rotateTime;
-    private bool rotateLeftCompleted;
+    private bool movable; //動けるかどうか
 
     //=============================================================
     private void Init () {
         CRef();
         Direction = 0f;
         rotateTime = 0f;
+        movable = true;
     }
 
     //=============================================================
@@ -91,32 +95,93 @@ public class Tank : MonoBehaviour {
     /// 移動処理を統括した関数
     /// </summary>
     private void Move () {
-        bool left = Input.GetKey(KeyCode.LeftArrow);
-        bool right = Input.GetKey(KeyCode.RightArrow);
-        bool up = Input.GetKey(KeyCode.UpArrow);
-        bool down = Input.GetKey(KeyCode.DownArrow);
+        bool left = false;
+        bool right = false;
+        bool up = false;
+        bool down = false;
+        bool space = false;
 
-        Direction = transform.eulerAngles.y;
+        if(IsUseAI) {
+            if(Random.Range(0,3) == 2) {
+                left = true;
+            }
 
-        if(RotateDirection(left && right && up && down,-1,Vector3.zero)) return;
+            if(Random.Range(0,3) == 2) {
+                right = true;
+            }
 
-        if(RotateDirection(left && right && up,270,Vector3.forward)) return;
-        if(RotateDirection(left && right && down,90,Vector3.back)) return;
-        if(RotateDirection(left && up && down,180,Vector3.left)) return;
-        if(RotateDirection(right && up && down,0,Vector3.right)) return;
+            if(Random.Range(0,3) == 2) {
+                up = true;
+            }
 
-        if(RotateDirection(left && up,225,Vector3.left + Vector3.forward)) return;
-        if(RotateDirection(left && right,-1,Vector3.zero)) return;
-        if(RotateDirection(left && down,135,Vector3.left + Vector3.back)) return;
-        if(RotateDirection(right && up,315,Vector3.right + Vector3.forward)) return;
-        if(RotateDirection(right && down,45,Vector3.right + Vector3.back)) return;
-        if(RotateDirection(up && down,-1,Vector3.zero)) return;
+            if(Random.Range(0,3) == 2) {
+                down = true;
+            }
 
-        if(RotateDirection(left,180,Vector3.left)) return;
-        if(RotateDirection(right,0,Vector3.right)) return;
-        if(RotateDirection(up,270,Vector3.forward)) return;
-        if(RotateDirection(down,90,Vector3.back)) return;
+            if(Random.Range(0,3) == 2) {
+                space = true;
+            }
+
+        } else {
+            left = Input.GetKey(KeyCode.LeftArrow);
+            right = Input.GetKey(KeyCode.RightArrow);
+            up = Input.GetKey(KeyCode.UpArrow);
+            down = Input.GetKey(KeyCode.DownArrow);
+            space = Input.GetKeyDown(KeyCode.Space);
+
+            Direction = transform.eulerAngles.y;
+
+        }
+
+        if(movable) {
+            if(space) {
+                StartCoroutine(CreateBullet());
+            }
+            if(RotateDirection(left && right && up && down,-1,Vector3.zero)) return;
+
+            if(RotateDirection(left && right && up,270,Vector3.forward)) return;
+            if(RotateDirection(left && right && down,90,Vector3.back)) return;
+            if(RotateDirection(left && up && down,180,Vector3.left)) return;
+            if(RotateDirection(right && up && down,0,Vector3.right)) return;
+
+            if(RotateDirection(left && up,225,Vector3.left + Vector3.forward)) return;
+            if(RotateDirection(left && right,-1,Vector3.zero)) return;
+            if(RotateDirection(left && down,135,Vector3.left + Vector3.back)) return;
+            if(RotateDirection(right && up,315,Vector3.right + Vector3.forward)) return;
+            if(RotateDirection(right && down,45,Vector3.right + Vector3.back)) return;
+            if(RotateDirection(up && down,-1,Vector3.zero)) return;
+
+            if(RotateDirection(left,180,Vector3.left)) return;
+            if(RotateDirection(right,0,Vector3.right)) return;
+            if(RotateDirection(up,270,Vector3.forward)) return;
+            if(RotateDirection(down,90,Vector3.back)) return;
+        }
 
         rotateTime = 0;
+    }
+
+    //=====================================================================================================================================
+    /// <summary>
+    /// 弾を作成する
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator CreateBullet () {
+        if(BulletNum <= DeV.TANK_BULLET_NUM_LIMIT) {
+            BulletNum++;
+            GameObject obj = Instantiate(Resources.Load("Prefabs/Bullet")) as GameObject;
+            obj.transform.position = this.transform.position +
+                new Vector3(
+                    DeV.TANK_BULLET_INIT_POSITION_RIGHT.x * Mathf.Cos(Mathf.Deg2Rad * Direction) + DeV.TANK_BULLET_INIT_POSITION_FORWARD.x * Mathf.Sin(Mathf.Deg2Rad * Direction),
+                    DeV.TANK_BULLET_INIT_POSITION_RIGHT.y,
+                    DeV.TANK_BULLET_INIT_POSITION_RIGHT.z * Mathf.Cos(Mathf.Deg2Rad * Direction) + DeV.TANK_BULLET_INIT_POSITION_FORWARD.z * Mathf.Sin(Mathf.Deg2Rad * Direction) * (-1)
+                );
+
+            obj.GetComponent<Bullet>().Speed +=
+                new Vector3(DeV.TANK_BULLET_SPEED * Mathf.Cos(Mathf.Deg2Rad * Direction),0,DeV.TANK_BULLET_SPEED * Mathf.Sin(Mathf.Deg2Rad * Direction) * (-1));
+
+            obj.GetComponent<Bullet>().Formar = this.gameObject;
+
+        }
+        yield break;
     }
 }
