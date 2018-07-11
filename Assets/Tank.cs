@@ -11,6 +11,13 @@ public class Tank : MonoBehaviour {
     private GameObject tower;
     private GameObject bodies;
 
+    //入力保持用
+    private bool left;
+    private bool right;
+    private bool up;
+    private bool down;
+    private bool space;
+
     private float Direction; //方向
     private float rotateTime;
     private bool movable; //動けるかどうか
@@ -92,14 +99,22 @@ public class Tank : MonoBehaviour {
 
     //=====================================================================================================================================
     /// <summary>
+    /// 行動変数の初期化
+    /// </summary>
+    private void ActionInit () {
+        left = false;
+        right = false;
+        up = false;
+        down = false;
+        space = false;
+    }
+
+    //=====================================================================================================================================
+    /// <summary>
     /// 移動処理を統括した関数
     /// </summary>
     private void Move () {
-        bool left = false;
-        bool right = false;
-        bool up = false;
-        bool down = false;
-        bool space = false;
+        ActionInit();
 
         if(IsUseAI) {
             if(Random.Range(0,3) == 2) {
@@ -128,15 +143,16 @@ public class Tank : MonoBehaviour {
             up = Input.GetKey(KeyCode.UpArrow);
             down = Input.GetKey(KeyCode.DownArrow);
             space = Input.GetKeyDown(KeyCode.Space);
-
-            Direction = transform.eulerAngles.y;
-
         }
 
+        Direction = transform.eulerAngles.y; //方向の更新
+
+        //動作可能状態なら
         if(movable) {
             if(space) {
                 StartCoroutine(CreateBullet());
             }
+
             if(RotateDirection(left && right && up && down,-1,Vector3.zero)) return;
 
             if(RotateDirection(left && right && up,270,Vector3.forward)) return;
