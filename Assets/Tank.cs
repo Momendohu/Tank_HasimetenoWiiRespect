@@ -18,8 +18,10 @@ public class Tank : MonoBehaviour {
     private bool down;
     private bool space;
 
+    private int actionPoint; //行動ポイント
+
     private float Direction; //方向
-    private float rotateTime;
+    private float rotateTime; //回転処理中の時間
     private bool movable; //動けるかどうか
 
     //=============================================================
@@ -117,6 +119,60 @@ public class Tank : MonoBehaviour {
         ActionInit();
 
         if(IsUseAI) {
+            switch(DeV.TEST_ACTIONPATTERN_0[actionPoint]) {
+                case 0:
+                break;
+
+                case 1:
+                left = true;
+                break;
+
+                case 2:
+                right = true;
+                break;
+
+                case 3:
+                up = true;
+                break;
+
+                case 4:
+                down = true;
+                break;
+
+                case 5:
+                left = true;
+                up = true;
+                break;
+
+                case 6:
+                left = true;
+                down = true;
+                break;
+
+                case 7:
+                right = true;
+                up = true;
+                break;
+
+                case 8:
+                right = true;
+                down = true;
+                break;
+
+                case 9:
+                space = true;
+                break;
+
+                default:
+                break;
+            }
+
+            actionPoint++;
+            if(actionPoint >= DeV.ACTIONPATTERN_LENGTH) {
+                actionPoint = 0;
+            }
+
+            /*
             if(Random.Range(0,3) == 2) {
                 left = true;
             }
@@ -136,6 +192,7 @@ public class Tank : MonoBehaviour {
             if(Random.Range(0,3) == 2) {
                 space = true;
             }
+            */
 
         } else {
             left = Input.GetKey(KeyCode.LeftArrow);
