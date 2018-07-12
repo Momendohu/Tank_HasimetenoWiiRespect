@@ -1244,7 +1244,8 @@ Prefab:
       propertyPath: m_TagString
       value: Wall
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 54954209227868128, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &169403773
@@ -6237,6 +6238,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
+    - {fileID: 54954209227868128, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &624077579
@@ -17413,6 +17415,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
+    - {fileID: 54954209227868128, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1717735543
@@ -17429,7 +17432,7 @@ GameObject:
   - component: {fileID: 1717735544}
   m_Layer: 0
   m_Name: Tank
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19963,6 +19966,7 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
+    - {fileID: 54954209227868128, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 4b3356114970e9242bc7b73452b776a1, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &2068129004

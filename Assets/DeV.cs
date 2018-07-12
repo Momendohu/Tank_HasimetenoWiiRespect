@@ -4,10 +4,10 @@ using UnityEngine;
 //using UnityEngine.UI;
 
 public class DeV : MonoBehaviour {
-    public static readonly float TANK_MOVE_SPEED = 0.03f;
-    public static readonly float TANK_ROTATE_SPEED = 20f;
+    public static readonly float TANK_MOVE_SPEED = 0.04f;
+    public static readonly float TANK_ROTATE_SPEED = 3f;
 
-    public static readonly float TANK_BULLET_SPEED = 0.2f;
+    public static readonly float TANK_BULLET_SPEED = 0.1f;
     public static readonly int TANK_BULLET_MAX_HITPOINT = 10;
     public static readonly int TANK_BULLET_NUM_LIMIT = 10;
 

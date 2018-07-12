@@ -12,6 +12,8 @@ public class Tank : MonoBehaviour {
     private GameObject bodies;
     private FieldManager fieldManager;
 
+    private RaycastHit hit; //レイ
+
     //入力保持用
     private bool left;
     private bool right;
@@ -123,6 +125,12 @@ public class Tank : MonoBehaviour {
         ActionInit();
 
         if(IsUseAI) {
+            if(Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * Direction),0,-Mathf.Sin(Mathf.Deg2Rad * Direction)),out hit,Mathf.Infinity)) {
+                if(hit.collider.tag.Equals("Player")) {
+                    space = true;
+                }
+            }
+
             Vector3 vec = fieldManager.goalPoint[AIgoal] - this.transform.position;
             if(vec.sqrMagnitude > 0.1f) {
                 if(Mathf.Abs(vec.x) >= 0.05f) {
@@ -141,7 +149,7 @@ public class Tank : MonoBehaviour {
                     }
                 }
             } else {
-                ChangeAIGoal(fieldManager.NearPoint(this.transform.position));
+                ChangeAIGoal(Random.Range(0,fieldManager.goalPoint.Count));
             }
         } else {
 
@@ -216,19 +224,10 @@ public class Tank : MonoBehaviour {
         AIgoal = _goal;
     }
 
-    /*private void OnTriggerEnter (Collider collider) {
-        Debug.Log("HIT:" + collider.tag);
-        if(IsUseAI) {
-            if(collider.gameObject.tag.Equals("Wall")) {
-                ChangeAIGoal();
-            }
-        }
-    }*/
-
     private void OnCollisionEnter (Collision collision) {
-        Debug.Log("HIT:" + collision.gameObject.tag);
+        //Debug.Log("HIT:" + collision.gameObject.tag);
         if(IsUseAI) {
-            if(collision.gameObject.gameObject.tag.Equals("Wall")) {
+            if(collision.gameObject.gameObject.tag.Equals("WallRL") || collision.gameObject.gameObject.tag.Equals("WallUD")) {
                 ChangeAIGoal(Random.Range(0,fieldManager.goalPoint.Count));
             }
         }
