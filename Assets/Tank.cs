@@ -10,6 +10,7 @@ public class Tank : MonoBehaviour {
 
     private GameObject tower;
     private GameObject bodies;
+    private FieldManager fieldManager;
 
     //入力保持用
     private bool left;
@@ -18,11 +19,11 @@ public class Tank : MonoBehaviour {
     private bool down;
     private bool space;
 
-    private int actionPoint; //行動ポイント
-
     private float Direction; //方向
     private float rotateTime; //回転処理中の時間
     private bool movable; //動けるかどうか
+
+    private int AIgoal; //AI使用時のゴール
 
     //=============================================================
     private void Init () {
@@ -30,12 +31,15 @@ public class Tank : MonoBehaviour {
         Direction = 0f;
         rotateTime = 0f;
         movable = true;
+
+        AIgoal = 1;
     }
 
     //=============================================================
     private void CRef () {
         tower = GameObject.Find("Tank/tower");
         bodies = GameObject.Find("Tank/bodies");
+        fieldManager = GameObject.Find("FieldManager").GetComponent<FieldManager>();
     }
 
     //=============================================================
@@ -119,81 +123,26 @@ public class Tank : MonoBehaviour {
         ActionInit();
 
         if(IsUseAI) {
-            switch(DeV.TEST_ACTIONPATTERN_0[actionPoint]) {
-                case 0:
-                break;
+            Vector3 vec = fieldManager.goalPoint[AIgoal] - this.transform.position;
+            if(vec.sqrMagnitude > 0.1f) {
+                if(Mathf.Abs(vec.x) >= 0.05f) {
+                    if(vec.x > 0) {
+                        right = true;
+                    } else if(vec.x < 0) {
+                        left = true;
+                    }
+                }
 
-                case 1:
-                left = true;
-                break;
-
-                case 2:
-                right = true;
-                break;
-
-                case 3:
-                up = true;
-                break;
-
-                case 4:
-                down = true;
-                break;
-
-                case 5:
-                left = true;
-                up = true;
-                break;
-
-                case 6:
-                left = true;
-                down = true;
-                break;
-
-                case 7:
-                right = true;
-                up = true;
-                break;
-
-                case 8:
-                right = true;
-                down = true;
-                break;
-
-                case 9:
-                space = true;
-                break;
-
-                default:
-                break;
+                if(Mathf.Abs(vec.z) >= 0.05f) {
+                    if(vec.z > 0) {
+                        up = true;
+                    } else if(vec.z < 0) {
+                        down = true;
+                    }
+                }
+            } else {
+                ChangeAIGoal(fieldManager.NearPoint(this.transform.position));
             }
-
-            actionPoint++;
-            if(actionPoint >= DeV.ACTIONPATTERN_LENGTH) {
-                actionPoint = 0;
-            }
-
-            /*
-            if(Random.Range(0,3) == 2) {
-                left = true;
-            }
-
-            if(Random.Range(0,3) == 2) {
-                right = true;
-            }
-
-            if(Random.Range(0,3) == 2) {
-                up = true;
-            }
-
-            if(Random.Range(0,3) == 2) {
-                down = true;
-            }
-
-            if(Random.Range(0,3) == 2) {
-                space = true;
-            }
-            */
-
         } else {
             left = Input.GetKey(KeyCode.LeftArrow);
             right = Input.GetKey(KeyCode.RightArrow);
@@ -256,5 +205,31 @@ public class Tank : MonoBehaviour {
 
         }
         yield break;
+    }
+
+    //=====================================================================================================================================
+    /// <summary>
+    /// AIGoalを変更する
+    /// </summary>
+    private void ChangeAIGoal (int _goal) {
+        AIgoal = _goal;
+    }
+
+    /*private void OnTriggerEnter (Collider collider) {
+        Debug.Log("HIT:" + collider.tag);
+        if(IsUseAI) {
+            if(collider.gameObject.tag.Equals("Wall")) {
+                ChangeAIGoal();
+            }
+        }
+    }*/
+
+    private void OnCollisionEnter (Collision collision) {
+        Debug.Log("HIT:" + collision.gameObject.tag);
+        if(IsUseAI) {
+            if(collision.gameObject.gameObject.tag.Equals("Wall")) {
+                ChangeAIGoal(Random.Range(0,fieldManager.goalPoint.Count));
+            }
+        }
     }
 }

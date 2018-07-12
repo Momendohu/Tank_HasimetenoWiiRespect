@@ -54,6 +54,7 @@ public class Bullet : MonoBehaviour {
         if(other.tag.Equals("WallUD")) {
             HitPoint--;
             Speed = new Vector3(Speed.x,Speed.y,Speed.z * (-1));
+           
         }
 
         if(other.tag.Equals("WallRL")) {
