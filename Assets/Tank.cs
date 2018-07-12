@@ -125,7 +125,10 @@ public class Tank : MonoBehaviour {
         ActionInit();
 
         if(IsUseAI) {
-            if(Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * Direction),0,-Mathf.Sin(Mathf.Deg2Rad * Direction)),out hit,Mathf.Infinity)) {
+            bool ray1 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * Direction),0,-Mathf.Sin(Mathf.Deg2Rad * Direction)),out hit,Mathf.Infinity);
+            bool ray2 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * (Direction + 30)),0,-Mathf.Sin(Mathf.Deg2Rad * (Direction + 30))),out hit,Mathf.Infinity);
+            bool ray3 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * (Direction - 30)),0,-Mathf.Sin(Mathf.Deg2Rad * (Direction - 30))),out hit,Mathf.Infinity);
+            if(ray1 || ray2 || ray3) {
                 if(hit.collider.tag.Equals("Player")) {
                     space = true;
                 }
