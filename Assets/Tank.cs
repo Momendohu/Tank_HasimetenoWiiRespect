@@ -7,10 +7,13 @@ public class Tank : MonoBehaviour {
     //=============================================================
     public bool IsUseAI = false;
     public int BulletNum;
+    public bool RemoveFlag;
 
+    private GameObject player;
     private GameObject tower;
     private GameObject bodies;
     private FieldManager fieldManager;
+    private SearchPlayerBox searchPlayerBox;
 
     private RaycastHit hit; //レイ
 
@@ -30,6 +33,8 @@ public class Tank : MonoBehaviour {
     //=============================================================
     private void Init () {
         CRef();
+
+        RemoveFlag = false;
         Direction = 0f;
         rotateTime = 0f;
         movable = true;
@@ -39,9 +44,11 @@ public class Tank : MonoBehaviour {
 
     //=============================================================
     private void CRef () {
+        player = GameObject.Find("Player");
         tower = GameObject.Find("Tank/tower");
         bodies = GameObject.Find("Tank/bodies");
         fieldManager = GameObject.Find("FieldManager").GetComponent<FieldManager>();
+        searchPlayerBox = transform.Find("SearchPlayerBox").GetComponent<SearchPlayerBox>();
     }
 
     //=============================================================
@@ -58,6 +65,9 @@ public class Tank : MonoBehaviour {
         //bodies.transform.eulerAngles += Time.deltaTime * Vector3.up * 30;
 
         Move();
+        if(RemoveFlag) {
+            Destroy(this.gameObject,0.3f);
+        }
     }
 
     //=====================================================================================================================================
@@ -125,14 +135,19 @@ public class Tank : MonoBehaviour {
         ActionInit();
 
         if(IsUseAI) {
-            bool ray1 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * Direction),0,-Mathf.Sin(Mathf.Deg2Rad * Direction)),out hit,Mathf.Infinity);
-            bool ray2 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * (Direction + 30)),0,-Mathf.Sin(Mathf.Deg2Rad * (Direction + 30))),out hit,Mathf.Infinity);
-            bool ray3 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * (Direction - 30)),0,-Mathf.Sin(Mathf.Deg2Rad * (Direction - 30))),out hit,Mathf.Infinity);
-            if(ray1 || ray2 || ray3) {
+            if(player != null) {
+                if(Vector3.Distance(this.transform.position,player.transform.position) <= 3 && searchPlayerBox.IsSeePlayer) {
+                    space = true;
+                    searchPlayerBox.IsSeePlayer = false;
+                }
+            }
+
+            /*bool ray1 = Physics.Raycast(transform.position,new Vector3(Mathf.Cos(Mathf.Deg2Rad * Direction),0,-Mathf.Sin(Mathf.Deg2Rad * Direction)),out hit,Mathf.Infinity);
+            if(ray1) {
                 if(hit.collider.tag.Equals("Player")) {
                     space = true;
                 }
-            }
+            }*/
 
             Vector3 vec = fieldManager.goalPoint[AIgoal] - this.transform.position;
             if(vec.sqrMagnitude > 0.1f) {
@@ -151,6 +166,14 @@ public class Tank : MonoBehaviour {
                         down = true;
                     }
                 }
+
+                //一定の確率で行動を変化させる
+                if(Random.Range(0,100) / 100f <= DeV.PROV_NOMOVE) ActionInit();
+                if(Random.Range(0,100) / 100f <= DeV.PROV_RIGHT) right = true;
+                if(Random.Range(0,100) / 100f <= DeV.PROV_LEFT) left = true;
+                if(Random.Range(0,100) / 100f <= DeV.PROV_UP) up = true;
+                if(Random.Range(0,100) / 100f <= DeV.PROV_DOWN) down = true;
+
             } else {
                 ChangeAIGoal(Random.Range(0,fieldManager.goalPoint.Count));
             }

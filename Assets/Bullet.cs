@@ -12,6 +12,8 @@ public class Bullet : MonoBehaviour {
 
     private Vector3 screenPos;
 
+    private float unHitTime;
+
     //=============================================================
     private void Init () {
         CRef();
@@ -27,6 +29,7 @@ public class Bullet : MonoBehaviour {
     //=============================================================
     private void Awake () {
         Init();
+        unHitTime = DeV.MAX_BULLET_UNHIT_TIME;
     }
 
     private void Start () {
@@ -35,6 +38,7 @@ public class Bullet : MonoBehaviour {
 
     private void Update () {
         transform.position += Speed;
+        unHitTime -= Time.deltaTime;
 
         //カメラの外に出たら消す
         screenPos = GameObject.Find("Main Camera").GetComponent<Camera>().WorldToViewportPoint(this.transform.position);
@@ -48,13 +52,29 @@ public class Bullet : MonoBehaviour {
             Formar.GetComponent<Tank>().BulletNum--;
             Destroy(this.gameObject);
         }
+
+        //発射元が倒されたら消す
+        if(Formar.GetComponent<Tank>().RemoveFlag) {
+            Formar.GetComponent<Tank>().BulletNum--;
+            Destroy(this.gameObject);
+        }
     }
 
     private void OnTriggerEnter (Collider other) {
+        if(unHitTime <= 0) {
+            if(other.tag.Equals("Player")) {
+                other.GetComponent<Tank>().RemoveFlag = true;
+            }
+
+            if(other.tag.Equals("Enemy")) {
+                other.GetComponent<Tank>().RemoveFlag = true;
+            }
+        }
+
         if(other.tag.Equals("WallUD")) {
             HitPoint--;
             Speed = new Vector3(Speed.x,Speed.y,Speed.z * (-1));
-           
+
         }
 
         if(other.tag.Equals("WallRL")) {

@@ -12,10 +12,12 @@ public class FieldManager : MonoBehaviour {
         CRef();
 
         goalPoint.Add(new Vector3(2.6f,-0.92f,1.5f));
+        goalPoint.Add(new Vector3(2.3f,-0.92f,0.3f));
         goalPoint.Add(new Vector3(2.2f,-0.92f,-1.4f));
         goalPoint.Add(new Vector3(-0.7f,-0.92f,-1.4f));
         goalPoint.Add(new Vector3(-0.7f,-0.92f,1.4f));
         goalPoint.Add(new Vector3(-2.7f,-0.92f,1.4f));
+        goalPoint.Add(new Vector3(-2.7f,-0.92f,0.3f));
         goalPoint.Add(new Vector3(-2.7f,-0.92f,-1.7f));
     }
 
