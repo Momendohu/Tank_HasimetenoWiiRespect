@@ -144,6 +144,7 @@ public class Tank : MonoBehaviour {
                 ChangeAIGoal(fieldManager.NearPoint(this.transform.position));
             }
         } else {
+
             left = Input.GetKey(KeyCode.LeftArrow);
             right = Input.GetKey(KeyCode.RightArrow);
             up = Input.GetKey(KeyCode.UpArrow);
