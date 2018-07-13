@@ -223,7 +223,7 @@ public class Tank : MonoBehaviour {
     /// </summary>
     /// <returns></returns>
     private IEnumerator CreateBullet () {
-        if(BulletNum <= DeV.TANK_BULLET_NUM_LIMIT) {
+        if(BulletNum < DeV.TANK_BULLET_NUM_LIMIT) {
             BulletNum++;
             GameObject obj = Instantiate(Resources.Load("Prefabs/Bullet")) as GameObject;
             obj.transform.position = this.transform.position +
